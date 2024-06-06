@@ -31,3 +31,11 @@ body {
     text-wrap: balance;
   }
 }
+
+.azul {
+  background-color: dodgerblue;
+}
+
+.vermelho {
+  background-color: crimson;
+}
