@@ -1,32 +1,36 @@
-import { createContext, JSXElementConstructor, ReactElement, ReactNode, ReactPortal, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
-type Tema = 'dark' | ''
+// type Tema = 'dark' | ''
 
 interface AppContextProps {
-  tema?: Tema,
-  alternarTema?: () => void
+    tema?: string
+    alternarTema?: () => void
 }
 
 const AppContext = createContext<AppContextProps>({})
 
+export function AppProvider(props) {
+    const [tema, setTema] = useState('dark')
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function AppProvider(props: { children: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; }) {
-  const [tema, setTema] = useState<Tema>('')
+    function alternarTema() {
+        const novoTema = tema === '' ? 'dark' : ''
+        setTema(novoTema)
+        localStorage.setItem('tema', novoTema)
+    }
 
-  function alternarTema() {
-    setTema(tema === '' ? 'dark' : '')
-  }
+    useEffect(() => {
+        const temaSalvo = localStorage.getItem('tema')
+        setTema(temaSalvo)
+    }, [])
 
-  return (
-    <AppContext.Provider value={{
-      tema,
-      alternarTema
-    }}>
-      {props.children}
-    </AppContext.Provider>
-  )
+    return (
+        <AppContext.Provider value={{
+            tema,
+            alternarTema
+        }}>
+            {props.children}
+        </AppContext.Provider>
+    )
 }
-export default AppContext
 
-export const AppConsumer = AppContext.Consumer
+export default AppContext
